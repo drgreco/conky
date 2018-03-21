@@ -1,0 +1,158 @@
+conky.config = {
+-- Conky configuration script.
+-- Filename: Horizontal Info conkyrc
+-- Author: Tanmay Gandhi
+-- To start, in a terminal - conky -d -c <path to .conkyrc>
+-- Or as a startup application - conky -d -p15 -c <path to .conkyrc>
+
+-- Locale, fonts and font sizes.
+	use_xft = true,
+	font = 'Droid Sans:size=8',
+	override_utf8_locale = true,
+
+-- Conky performance
+	update_interval = 2,
+	total_run_times = 0,
+	double_buffer = true,
+	no_buffers = true,
+	net_avg_samples = 2,
+	text_buffer_size = 1024,
+	top_name_width = 22,
+
+-- Execute it in its own window
+	own_window = true,
+	own_window_transparent = true,
+	own_window_type = 'panel',
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+
+-- Font colors
+	default_color = '#C0C0C0',-- mid grey
+
+-- Header colors
+	color0 = '#FFFFFF',-- pale yellow
+
+-- Minimum dimensions
+	minimum_width = 1566, minimum_height = 0,
+	default_bar_width = 25, default_bar_height = 10,
+	default_graph_width = 25, default_graph_height = 10,
+
+-- Conky positioning, roughly centred.
+	alignment = 'bottom_left',
+	gap_x = 1920,
+	gap_y = 0,
+    xinerama_head = 1,
+
+-- Conky behavior
+	if_up_strictness = 'address',
+};
+
+conky.text = [[
+########### 1st line #############################################
+${goto 5}c1:\
+${if_match ${cpu cpu1} > 70}${goto 20}${color red}${cpubar cpu1}${color}  ${cpu cpu1}%\
+${else}${goto 20}${cpubar cpu1}  ${cpu cpu1}%${endif}\
+${goto 80}${execi 10 echo $(sensors -f| grep -m 1 'Core 0:' | cut -d' ' -f10)}\
+\
+${goto 140}root:${goto 175}\
+${if_match ${fs_free_perc} < 10}${color red}${fs_used /}${goto 225}${fs_bar /}  ${fs_size /}${color}\
+${else}${fs_used /}${goto 225}${fs_bar /}  ${fs_size /}${endif}\
+\
+${goto 300}u:${goto 310}\
+${if_up tun0}${upspeedgraph tun0 10,25 B7B2AD 0099FF} ${upspeed tun0}\
+${else}${if_up wlp2s0}${upspeedgraph wlp2s0 10,25 B7B2AD 0099FF} ${upspeed wlp2s0}${endif}${endif}\
+\
+${goto 420}${top name 1}${goto 520}${top pid 1}${goto 560}${top cpu 1}%\
+\
+${goto 610}procs:${goto 660}${running_processes}\
+\
+${goto 800}|  DTC:${goto 850}${time %r}  |\
+\
+${goto 1000}_${execi 300 wc -l ~/.todo | awk '{print $1}'} total tasks_\
+\
+${goto 1300}ams${goto 1340}sje${goto 1380}sng\
+\
+${goto 1460}${if_match "${exec pidof pianobar}" != ""}Pianobar Now Playing:\
+${else}Put Some Music On !${endif} 
+########### 2nd line ################################################
+${goto 5}c2:\
+${if_match ${cpu cpu2} > 70}${goto 20}${color red}${cpubar cpu2}${color}  ${cpu cpu2}%\
+${else}${goto 20}${cpubar cpu2}  ${cpu cpu2}%${endif}\
+${goto 80}${execi 10 echo $(sensors -f| grep -m 1 'Core 1:' | cut -d' ' -f10)}\
+\
+${goto 140}ram:${goto 175}\
+${if_match ${memperc} > 90}${color red}${mem}${goto 225}${membar}  $memperc%${color}\
+${else}${mem}${goto 225}${membar}  $memperc%${endif}\
+\
+${goto 300}d:${goto 310}\
+${if_up tun0}${downspeedgraph tun0 10,25 B7B2AD FF0000} ${downspeed tun0}\
+${else}${if_up wlp2s0}${downspeedgraph wlp2s0 10,25 B7B2AD FF0000} ${downspeed wlp2s0}${endif}${endif}\
+\
+${goto 420}${top name 2}${goto 520}${top pid 2}${goto 560}${top cpu 2}%\
+\
+${goto 610}load:${goto 660}${loadavg}\
+\
+${goto 800}|  UTC:${goto 850}${tztime UTC %r}  |\
+\
+${goto 1000} ${execi 300 sed -n 1p ~/.todo | cut -c 1-55}\
+\
+${goto 1300}${execpi 10 gdnsd-check.pl ams ams}\
+${goto 1340}${execpi 10 gdnsd-check.pl ams sje}\
+${goto 1380}${execpi 10 gdnsd-check.pl ams sng}\
+\
+${goto 1460}${if_match "${exec pidof pianobar}" != ""}\
+${head ${HOME}/.config/pianobar/title 1}${endif}
+########### 3rd line ###############################################
+${goto 5}c3:\
+${if_match ${cpu cpu3} > 70}${goto 20}${color red}${cpubar cpu3}${color}  ${cpu cpu3}%\
+${else}${goto 20}${cpubar cpu3}  ${cpu cpu3}%${endif}\
+\
+${goto 80}${execi 10 echo $(sensors -f| grep -m 1 'Core 2:' | cut -d' ' -f10)}\
+\
+${goto 140}swap:${goto 175}\
+${if_match ${swapperc} > 90}${color red}${swapmax}${goto 225}${swapbar}  ${swapperc}%${color}\
+${else}${swapmax}${goto 225}${swapbar}  ${swapperc}%${endif}\
+\
+${goto 300}u:\
+${if_up tun0}${totalup tun0}  | d:${totaldown tun0}\
+${else}${if_up wlp2s0}${totalup wlp2s0}  | d:${totaldown wlp2s0}${endif}${endif}\
+\
+${goto 420}${top name 3}${goto 520}${top pid 3}${goto 560}${top cpu 3}%\
+\
+${goto 610}threads:${goto 660}${threads}\
+\
+${goto 800}|  PH:${goto 850}${tztime Asia/Manila %r}  |\
+\
+${goto 1000} ${execi 300 sed -n 2p ~/.todo | cut -c 1-55}\
+\
+${goto 1300}${execpi 10 gdnsd-check.pl sje ams}\
+${goto 1340}${execpi 10 gdnsd-check.pl sje sje}\
+${goto 1380}${execpi 10 gdnsd-check.pl sje sng}\
+\
+${goto 1460}${if_match "${exec pidof pianobar}" != ""}\
+${head ${HOME}/.config/pianobar/artist 1}${endif}
+########### 4th line ################################################
+${goto 5}c4:\
+${if_match ${cpu cpu4} > 70}${goto 20}${color red}${cpubar cpu4}${color}  ${cpu cpu4}%\
+${else}${goto 20}${cpubar cpu4}  ${cpu cpu4}%${endif}\
+${goto 80}${execi 10 echo $(sensors -f| grep -m 1 'Core 3:' | cut -d' ' -f10)}\
+\
+${goto 140}battery:\
+${goto 185}\
+${if_match ${battery_percent BAT0} < 10}${color red} ${battery_short BAT0}${goto 225}${battery_time BAT0}${color}\
+${else}${battery_short BAT0}${goto 225}${battery_time BAT0}${endif}\
+\
+${goto 1000} ${execi 300 sed -n 3p ~/.todo | cut -c 1-55}\
+${goto 300}\
+${if_up tun0}tun0:${goto 330}${addr tun0}\
+${else}${if_up wlp2s0}wlp2s0${goto 350}${addr wlp2s0}${endif}${endif}\
+\
+${goto 420}${top name 4}${goto 520}${top pid 4}${goto 560}${top cpu 4}%\
+\
+\
+${goto 1300}${execpi 10 gdnsd-check.pl sng ams}\
+${goto 1340}${execpi 10 gdnsd-check.pl sng sje}\
+${goto 1380}${execpi 10 gdnsd-check.pl sng sng}\
+\
+${goto 1460}${if_match "${exec pidof pianobar}" != ""}\
+${head ${HOME}/.config/pianobar/station 1}${endif}
+]];
